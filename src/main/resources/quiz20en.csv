@@ -1,0 +1,15 @@
+﻿By type of result the we can divide methods into,Methods with or without return value,Static or Non-Static methods,Constant and Variable methods,Integer or Double methods,With or without arguments
+Which class is a superclass of every class?,Object,Main,MainClass,Super,Class
+Which encoding contains the symbols of type char?,UTF-16,UTF-32,UTF-8,ASCII,Another one
+Comparison value is a,logical value,Object,Number,Symbol,String
+Which way of array declaration would not work,[]int[] a = new int[5][5];,int a[][] = new int[5][5];,int[][] a = new int[5][5];,int[] a[] = new int[5][5];,all of above
+"Select the correct form of ""main""",public static void main(String[] args),public void main(String[] args),public static void main(),public static void Main(String[] args),public int main(String[] args)
+How to get length of an array?,arrayName.length,arrayName.size(),size(arrayName),arrayName.length(),length(arrayName)
+"Which type of loop has an initializer, a condition and an increment?",for,infinite loop,do-while,for-each,while
+Which principle are getters and setters related to?,Encapsulation,Inheritance,Polymorphism,Abstraction,all of above
+An initialized variable must have:,"A type, a name and an initial value",A name and an initial value,A type and a name,A name,A name and an initial value
+To declare a variable we need at least to type:,A type and a name,"A type, a name and an initial value",A type and an initial value,A name,A name and an initial value
+Name the data types,primitive and reference data types,variables and primitives,reference types,primitive types,primitive and constant types
+You can call a non-static method ,only with creating an instance of the class which contains its implementation,without creating an instance of the class which contains its implementation,Only from dependent classes,from any class in the same package,from any method in the same class
+How should we declare classes and methods according to Java CodeConvention?,Classes start from capital letters and methods start from small letters,class names are capitalized and method names are written only with small letters,class names are written only with small letters and method names are capitalized,class names start from small letters and method names start from capital letters ,class and method names all start from capital letter
+Size of type char is equal to,16 bit,32 bits,8 bits,64 bits,1 bit
