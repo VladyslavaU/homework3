@@ -1,5 +1,7 @@
 package com.quiz;
 
+import com.quiz.implementation.Quiz;
+import com.quiz.model.Option;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -22,15 +24,10 @@ public class QuizTest {
     }
 
     @Test
-    void getQuestionsNumberRussian(){
-        assertEquals(quiz.getQuestions().size(), 14);
-    }
-
-    @Test
-    void getQuestionsNumberEnglish() throws IOException {
-        quiz.setTurnEnglish(true);
+    void getQuestionsNumber(){
         assertEquals(quiz.getQuestions().size(), 15);
     }
+
 
     @Test
     void shouldHaveOneAndOnlyOneCorrectOptionInEachQuestion() {
