@@ -1,4 +1,4 @@
-package com.quiz;
+package com.quiz.model;
 
 public class Option {
     private final String answer;

@@ -1,5 +1,7 @@
-package com.quiz;
+package com.quiz.implementation;
 
+import com.quiz.abstraction.QuizService;
+import com.quiz.model.Option;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Component;
@@ -11,46 +13,49 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 import java.util.Scanner;
 
+import static com.quiz.implementation.CommunicationEnum.SCORE;
+import static com.quiz.implementation.CommunicationEnum.SELECT_NUMBER;
+import static com.quiz.implementation.CommunicationEnum.START;
+import static java.util.stream.IntStream.range;
+
 @Component
-public class Quiz {
+public class Quiz implements QuizService {
     private final HashMap<String, List<Option>> questions = new HashMap<>();
     private int score;
-    private boolean turnEnglish;
+    private Locale locale;
     private static final String PATH_RU = "src/main/resources/quiz20ru.csv";
     private static final String PATH_EN = "src/main/resources/quiz20en.csv";
 
     public Quiz() throws IOException {
+        this.locale = Locale.ENGLISH;
         this.loadQuizQuestions();
     }
 
-    public void setTurnEnglish(boolean english) throws IOException {
-        this.turnEnglish = english;
-        this.loadQuizQuestions();
-    }
-
+    @Override
     public HashMap<String, List<Option>> getQuestions() {
         return this.questions;
     }
 
+    @Override
     public void startQuiz() throws IOException {
         this.score = 0;
         final Scanner scanner = new Scanner(System.in);
         this.selectLanguage();
         this.loadQuizQuestions();
-        System.out.println(Communication.ENTER_YOUR_NAME.getWords(this.turnEnglish));
-        System.out.println(scanner.next() + Communication.START.getWords(this.turnEnglish));
-        for (Map.Entry<String, List<Option>> entry : this.getQuestions().entrySet()) {
-            System.out.println(entry.getKey());
-            Quiz.printOptions(entry.getValue());
-            System.out.println(Communication.SELECT_NUMBER.getWords(this.turnEnglish));
-            this.checkAnswer(checkInput(scanner.next()), entry.getValue());
-        }
-        StringBuilder sb = new StringBuilder(String.valueOf(Communication.SCORE.getWords(this.turnEnglish)))
+        System.out.println(CommunicationEnum.ENTER_YOUR_NAME.getLocalizedMessage(this.locale));
+        System.out.println(scanner.next() + START.getLocalizedMessage(this.locale));
+        this.getQuestions().forEach((key, value) -> {
+            System.out.println(key);
+            Quiz.printOptions(value);
+            System.out.println(SELECT_NUMBER.getLocalizedMessage(this.locale));
+            this.checkAnswer(checkInput(scanner.next()), value);
+        });
+        StringBuilder sb = new StringBuilder(SCORE.getLocalizedMessage(this.locale))
                 .append(this.score)
-                .append(Communication.FROM.getWords(this.turnEnglish))
+                .append(CommunicationEnum.FROM.getLocalizedMessage(this.locale))
                 .append(this.questions.size())
                 .append(".");
         System.out.println(sb);
@@ -61,7 +66,7 @@ public class Quiz {
         this.questions.put(question, options);
     }
 
-    private void selectLanguage() throws IOException {
+    private void selectLanguage() {
         final String selectLanguage = "Если вы хотите пройти тест на русском, введите 1. If you want to take the test in English, type 2.";
         System.out.println(selectLanguage);
         final Scanner scanner = new Scanner(System.in);
@@ -69,19 +74,20 @@ public class Quiz {
         if (!input.matches("[1-2]")) {
             selectLanguage();
         }
-        this.setTurnEnglish(Integer.parseInt(input) == 2);
+        if(Integer.parseInt(input) == 1){
+            this.locale = Locale.forLanguageTag("RU");
+        } else {
+            this.locale = Locale.ENGLISH;
+        }
     }
 
-
     private static void printOptions(final List<Option> options) {
-        for (int i = 0; i < options.size(); i++) {
-            System.out.println(i + 1 + ". ".concat(options.get(i).toString()));
-        }
+        range(0, options.size()).mapToObj(i -> i + 1 + ". ".concat(options.get(i).toString())).forEachOrdered(System.out::println);
     }
 
     private int checkInput(final String input) {
         if (!input.matches("[1-5]")) {
-            System.out.println(Communication.SELECT_NUMBER.getWords(this.turnEnglish));
+            System.out.println(SELECT_NUMBER.getLocalizedMessage(this.locale));
             final Scanner scanner = new Scanner(System.in);
             return checkInput(scanner.next());
         } else {
@@ -96,7 +102,7 @@ public class Quiz {
     }
 
     private void loadQuizQuestions() throws IOException {
-        final File file = this.turnEnglish ? new File(PATH_EN) : new File(PATH_RU);
+        final File file = this.locale.equals(Locale.ENGLISH) ? new File(PATH_EN) : new File(PATH_RU);
         this.questions.clear();
         final Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(new FileReader(file));
         for (CSVRecord record : records) {
